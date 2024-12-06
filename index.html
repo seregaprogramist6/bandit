@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Однорукий бандит</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #1e1e2f, #3e3e5e);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            background: #2c2c3e;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #ffcc00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .slot-machine {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .slot {
+            width: 100px;
+            height: 100px;
+            background: #444;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .slot img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .slot img:hover {
+            transform: scale(1.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background: #218838;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        button:active {
+            background: #1e7e34;
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="userName">User</h1>
+        <div class="slot-machine">
+            <div class="slot" id="slot1"><img src="https://via.placeholder.com/80" alt=""></div>
+            <div class="slot" id="slot2"><img src="https://via.placeholder.com/80" alt=""></div>
+            <div class="slot" id="slot3"><img src="https://via.placeholder.com/80" alt=""></div>
+        </div>
+        <button id="generateButton" onclick="generateSlots()">Generate</button>
+        <button id="retryButton" class="retry-button" onclick="retryGame()">Ще раз</button>
+        <div class="message" id="message"></div>
+    </div>
+
+<script>
+    // Масив зображень
+    const images = [
+        "https://t4.ftcdn.net/jpg/02/52/93/81/360_F_252938192_JQQL8VoqyQVwVB98oRnZl83epseTVaHe.jpg", // Яблуко
+        "https://media.istockphoto.com/id/165977518/vector/pear.jpg?s=612x612&w=0&k=20&c=8ZWG4zJh9Hyw5M3V1ekju1uhrHfSompKQpYQislVev4=", // Груша
+        "https://as2.ftcdn.net/v2/jpg/01/79/95/11/1000_F_179951104_bZ91bq3SnH6Ju5c5JdVibOWlVEbj6V9Y.jpg", // Банан
+        "https://i.pinimg.com/736x/f9/3e/2e/f93e2e986a9262ed19719fe87e1e0e0d.jpg", // Вишня
+        "https://i.pinimg.com/736x/85/a2/aa/85a2aaa4742fe08d360c08f3f6a77675.jpg" // Абрикоси
+    ];
+
+    // Лічильник спроб
+    let attemptCounter = 0;
+
+    function getRandomImage() {
+        const randomIndex = Math.floor(Math.random() * images.length);
+        return images[randomIndex];
+    }
+
+    function generateSlots() {
+        attemptCounter++; // Збільшуємо лічильник спроб
+        const slot1 = document.getElementById('slot1').querySelector('img');
+        const slot2 = document.getElementById('slot2').querySelector('img');
+        const slot3 = document.getElementById('slot3').querySelector('img');
+        const message = document.getElementById('message');
+        const generateButton = document.getElementById('generateButton');
+
+        if (attemptCounter === 3) {
+            // На третю спробу всі слоти однакові
+            const winningImage = getRandomImage();
+            slot1.src = winningImage;
+            slot2.src = winningImage;
+            slot3.src = winningImage;
+            message.textContent = "Вітаємо! Ви виграли на третій спробі!";
+            generateButton.disabled = true; // Вимикаємо кнопку
+        } else {
+            // Звичайний випадковий вибір
+            slot1.src = getRandomImage();
+            slot2.src = getRandomImage();
+            slot3.src = getRandomImage();
+            message.textContent = "Спроба: " + attemptCounter + ". Спробуйте ще!";
+        }
+    }
+
+    function retryGame() {
+        attemptCounter = 0; // Скидаємо лічильник спроб
+        const message = document.getElementById('message');
+        const generateButton = document.getElementById('generateButton');
+        const slot1 = document.getElementById('slot1').querySelector('img');
+        const slot2 = document.getElementById('slot2').querySelector('img');
+        const slot3 = document.getElementById('slot3').querySelector('img');
+
+        generateButton.disabled = false; // Активуємо кнопку
+        slot1.src = getRandomImage();
+        slot2.src = getRandomImage();
+        slot3.src = getRandomImage();
+        message.textContent = "Гру перезапущено. Спробуйте знову!";
+    }
+
+    // Встановлюємо випадкові зображення на старті
+    window.onload = function() {
+        document.getElementById('slot1').querySelector('img').src = getRandomImage();
+        document.getElementById('slot2').querySelector('img').src = getRandomImage();
+        document.getElementById('slot3').querySelector('img').src = getRandomImage();
+    };
+</script>
+</body>
+</html>
